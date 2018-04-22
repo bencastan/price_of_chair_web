@@ -1,19 +1,27 @@
 from flask import Blueprint, request, session, redirect, url_for, render_template
 from src.models.users.user import User
+import src.models.users.errors as UserErrors
 
 user_blueprint = Blueprint('users', __name__)
 
 
+class UserError(object):
+    pass
+
+
 @user_blueprint.route('/login', methods=['GET', 'POST'])
 def login_user():
-    if request.metod == 'POST':
+    if request.method == 'POST':
         email = request.form['email']
         password = request.form['hashed']
 
-        if User.is_login_valid(email, password):
-            session['email'] = email
-            return redirect(url_for(".user_alerts"))
-
+        try:
+            if User.is_login_valid(email, password):
+                session['email'] = email
+                return redirect(url_for(".user_alert"))
+        except UserErrors.UserError as e:
+            return e.message
+        
     return render_template("users/login.html")  # Send the user an error if the login was invalid
 
 
@@ -24,7 +32,7 @@ def register_user():
 
 @user_blueprint.route('/alerts')
 def user_alert():
-    pass
+    return "This is the alerts page"
 
 
 @user_blueprint.route('/logout')
@@ -32,6 +40,6 @@ def logout_user():
     pass
 
 
-@user_blueprint.route('/check_alerts/<string:user_id')
+@user_blueprint.route('/check_alerts/<string:user_id>')
 def check_user_alerts(user_id):
     pass

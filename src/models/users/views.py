@@ -1,12 +1,20 @@
-from flask import Blueprint
-
+from flask import Blueprint, request, session, redirect, url_for, render_template
+from src.models.users.user import User
 
 user_blueprint = Blueprint('users', __name__)
 
 
-@user_blueprint.route('/login')
-def login_uer():
-    pass
+@user_blueprint.route('/login', methods=['GET', 'POST'])
+def login_user():
+    if request.metod == 'POST':
+        email = request.form['email']
+        password = request.form['hashed']
+
+        if User.is_login_valid(email, password):
+            session['email'] = email
+            return redirect(url_for(".user_alerts"))
+
+    return render_template("users/login.html")  # Send the user an error if the login was invalid
 
 
 @user_blueprint.route('/register')
@@ -14,7 +22,7 @@ def register_user():
     pass
 
 
-@user_blueprint.route('/alert')
+@user_blueprint.route('/alerts')
 def user_alert():
     pass
 

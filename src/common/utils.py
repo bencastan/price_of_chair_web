@@ -1,10 +1,11 @@
+import re
 from passlib.hash import pbkdf2_sha512
 
 
 class Utils(object):
 
     @staticmethod
-    def has_password(password):
+    def hash_password(password):
         """
         Hashes a password using pbkdf2_512
         :param password: The sha512 password from the login/register form
@@ -22,3 +23,9 @@ class Utils(object):
         :return: True if passwords match, false otherwise
         """
         return pbkdf2_sha512.verify(password, hashed_password)
+
+
+    @staticmethod
+    def email_is_valid(email):
+        email_address_matcher = re.compile('^[\w-]+@([\w-]+\.)+[\w]+$')
+        return True if email_address_matcher.match(email) else False

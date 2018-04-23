@@ -25,9 +25,21 @@ def login_user():
     return render_template("users/login.html")  # Send the user an error if the login was invalid
 
 
-@user_blueprint.route('/register')
+@user_blueprint.route('/register', methods=['GET', 'POST'])
 def register_user():
-    pass
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['hashed']
+
+        try:
+            if User.register_user(email, password):
+                session['email'] = email
+                return redirect(url_for(".user_alert"))
+        except UserErrors.UserError as e:
+            return e.message
+
+    return render_template("users/register.html")  # Send the user an error if the login was invalid
+
 
 
 @user_blueprint.route('/alerts')

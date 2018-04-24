@@ -27,5 +27,11 @@ class Utils(object):
 
     @staticmethod
     def email_is_valid(email):
+        """
+        Uses regular expression to check that the users email is valid, i.e.
+        user@test.com and user@test.com.au, can include '-'
+        :param email: the users e-mail address
+        :return: True is e-mail is valid, false otherwise
+        """
         email_address_matcher = re.compile('^[\w-]+@([\w-]+\.)+[\w]+$')
         return True if email_address_matcher.match(email) else False
